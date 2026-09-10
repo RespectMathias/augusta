@@ -1,0 +1,13 @@
+.context/
+.next/
+node_modules/
+coverage/
+out/
+build/
+next-env.d.ts
+pnpm-lock.yaml
+# Supplied reference documents and source datasets retain their formatting.
+AGENTS.md
+DESIGN.md
+docs/
+data/
