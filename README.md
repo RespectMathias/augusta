@@ -2,11 +2,11 @@
 
 ## How to run it
 
-Run `pnpm install`.
-Copy `.env.example` to `.env.local`.
-Set `AI_API_KEY` to your provider's API key.
-Set `AI_PROVIDER` and `AI_MODEL`.
-Run `pnpm dev`.
+1. Run `pnpm install`.
+2. Copy `.env.example` to `.env.local`.
+3. Set `AI_API_KEY` to your provider's API key.
+4. Set `AI_PROVIDER` and `AI_MODEL`.
+5. Run `pnpm dev`.
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
@@ -145,6 +145,6 @@ For Gateway, set `AI_PROVIDER=gateway`, use a Vercel Gateway key in `AI_API_KEY`
 
 Run `pnpm check` for formatting, lint, TypeScript, and tests; `pnpm fallow` for auditing; and `pnpm build` for the production build.
 
-At the last checks, all 59 tests in `tests/` passed, Fallow reported no issues, and the production build passed. The independent code review found no actionable issues. The agent checked the live Google flow through generation, approval, and the Approved view. Other provider tests use mocked HTTP responses.
+At the last checks, all 75 tests in `tests/` passed, Fallow reported no issues, and the production build passed. The independent code review found no actionable issues. The agent checked the live Google flow through generation, approval, and the Approved view. Other provider tests use mocked HTTP responses.
 
 Further tests suggested by the agent are to compare generated claims against source facts for all items and marketplaces, exercise slow requests and navigation during generation, and check keyboard and screen-reader use. Passing the marketplace rules does not prove that the copy is factually correct.
