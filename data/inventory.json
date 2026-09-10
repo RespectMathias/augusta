@@ -1,0 +1,221 @@
+[
+  {
+    "sku": "B2S-10041",
+    "name": "Bosch Professional GSB 18V-55 Combi Drill",
+    "brand": "Bosch",
+    "category": "Power tools",
+    "condition": "new",
+    "quantity": 12,
+    "cost_price_dkk": 899.0,
+    "weight_kg": 1.6,
+    "dimensions_cm": "36 x 24 x 10",
+    "attributes": {
+      "voltage": "18V",
+      "battery_included": false,
+      "case": "L-BOXX"
+    },
+    "notes": "Retail box slightly scuffed on 3 of 12 units"
+  },
+  {
+    "sku": "B2S-10042",
+    "name": "Makita DTD156Z Impact Driver (body only)",
+    "brand": "Makita",
+    "category": "Power tools",
+    "condition": "new",
+    "quantity": 4,
+    "cost_price_dkk": 649.0,
+    "weight_kg": 1.1,
+    "dimensions_cm": null,
+    "attributes": {
+      "voltage": "18V",
+      "battery_included": false
+    },
+    "notes": null
+  },
+  {
+    "sku": "B2S-10043",
+    "name": "Sennheiser HD 560S",
+    "brand": "Sennheiser",
+    "category": "Audio",
+    "condition": "returned - unopened",
+    "quantity": 1,
+    "cost_price_dkk": 1099.0,
+    "weight_kg": 0.24,
+    "dimensions_cm": "25 x 22 x 12",
+    "attributes": {
+      "impedance": "120 ohm",
+      "colour": "black"
+    },
+    "notes": "Customer return, seal intact"
+  },
+  {
+    "sku": "B2S-10044",
+    "name": "Assorted cable ties, mixed sizes",
+    "brand": null,
+    "category": null,
+    "condition": "new",
+    "quantity": 340,
+    "cost_price_dkk": 0.35,
+    "weight_kg": 0.004,
+    "dimensions_cm": null,
+    "attributes": {},
+    "notes": "Bulk, no packaging"
+  },
+  {
+    "sku": "B2S-10045",
+    "name": "DEWALT DCS391 Circular Saw",
+    "brand": "DeWalt",
+    "category": "Power tools",
+    "condition": "used - good",
+    "quantity": 2,
+    "cost_price_dkk": 720.0,
+    "weight_kg": 3.4,
+    "dimensions_cm": "35 x 25 x 24",
+    "attributes": {
+      "blade_mm": 165,
+      "voltage": "18V",
+      "battery_included": true
+    },
+    "notes": "Blade worn, some cosmetic marks on shoe plate"
+  },
+  {
+    "sku": "B2S-10046",
+    "name": "Logitech MX Master 3S",
+    "brand": "Logitech",
+    "category": "Computer accessories",
+    "condition": "new",
+    "quantity": 25,
+    "cost_price_dkk": 549.0,
+    "weight_kg": 0.14,
+    "dimensions_cm": "13 x 8.4 x 5.1",
+    "attributes": {
+      "connectivity": "Bluetooth / USB-C receiver",
+      "colour": "graphite"
+    },
+    "notes": null
+  },
+  {
+    "sku": "B2S-10047",
+    "name": "Unknown item - pallet 14",
+    "brand": null,
+    "category": null,
+    "condition": null,
+    "quantity": 1,
+    "cost_price_dkk": null,
+    "weight_kg": null,
+    "dimensions_cm": null,
+    "attributes": {},
+    "notes": "Needs manual identification"
+  },
+  {
+    "sku": "B2S-10048",
+    "name": "IKEA BEKANT desk, 160x80, white",
+    "brand": "IKEA",
+    "category": "Furniture",
+    "condition": "used - fair",
+    "quantity": 6,
+    "cost_price_dkk": 400.0,
+    "weight_kg": 41.0,
+    "dimensions_cm": "160 x 80 x 65",
+    "attributes": {
+      "adjustable_height": true,
+      "colour": "white"
+    },
+    "notes": "Flatpacked, assembly instructions missing. Two have scratched surfaces."
+  },
+  {
+    "sku": "B2S-10049",
+    "name": "Philips Hue White and Colour Ambiance E27 (2-pack)",
+    "brand": "Philips",
+    "category": "Home electronics",
+    "condition": "new",
+    "quantity": 18,
+    "cost_price_dkk": 379.0,
+    "weight_kg": 0.31,
+    "dimensions_cm": "12 x 12 x 11",
+    "attributes": {
+      "fitting": "E27",
+      "lumens": 1100,
+      "requires_bridge": true
+    },
+    "notes": null
+  },
+  {
+    "sku": "B2S-10050",
+    "name": "Milwaukee M18 FUEL 1/2\" Impact Wrench w/ Friction Ring, High Torque, Brushless, Cordless, Bare Tool, No Battery Or Charger Included",
+    "brand": "Milwaukee",
+    "category": "Power tools",
+    "condition": "new",
+    "quantity": 3,
+    "cost_price_dkk": 2149.0,
+    "weight_kg": 2.9,
+    "dimensions_cm": "25 x 24 x 9",
+    "attributes": {
+      "voltage": "18V",
+      "torque_nm": 1017,
+      "battery_included": false
+    },
+    "notes": "Long supplier description, verbatim from datasheet"
+  },
+  {
+    "sku": "B2S-10051",
+    "name": "Samsung 970 EVO Plus 1TB NVMe SSD",
+    "brand": "Samsung",
+    "category": "Computer components",
+    "condition": "used - like new",
+    "quantity": 9,
+    "cost_price_dkk": 610.0,
+    "weight_kg": 0.009,
+    "dimensions_cm": "8 x 2.2 x 0.3",
+    "attributes": {
+      "interface": "M.2 NVMe PCIe 3.0",
+      "capacity_gb": 1000
+    },
+    "notes": "Pulled from decommissioned laptops, all pass SMART checks"
+  },
+  {
+    "sku": "B2S-10052",
+    "name": "damaged - do not list",
+    "brand": "Anker",
+    "category": "Phone accessories",
+    "condition": "damaged",
+    "quantity": 7,
+    "cost_price_dkk": 0.0,
+    "weight_kg": 0.2,
+    "dimensions_cm": null,
+    "attributes": {},
+    "notes": "Water damage, scrap only"
+  },
+  {
+    "sku": "B2S-10053",
+    "name": "Stanley FatMax tape measure 8m",
+    "brand": "Stanley",
+    "category": "Hand tools",
+    "condition": "new",
+    "quantity": 44,
+    "cost_price_dkk": 89.0,
+    "weight_kg": 0.42,
+    "dimensions_cm": "8 x 8 x 4",
+    "attributes": {
+      "length_m": 8,
+      "blade_width_mm": 32
+    },
+    "notes": null
+  },
+  {
+    "sku": "B2S-10054",
+    "name": "Apple Magic Keyboard (A1644)",
+    "brand": "Apple",
+    "category": "Computer accessories",
+    "condition": "used - good",
+    "quantity": 5,
+    "cost_price_dkk": 340.0,
+    "weight_kg": 0.23,
+    "dimensions_cm": "28 x 11.5 x 1.1",
+    "attributes": {
+      "layout": "Danish",
+      "connectivity": "Bluetooth"
+    },
+    "notes": "Danish keyboard layout - relevant to buyers"
+  }
+]

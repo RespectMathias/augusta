@@ -1,0 +1,29 @@
+[
+  {
+    "id": "dba",
+    "name": "DBA",
+    "title_max_chars": 80,
+    "description_max_chars": 1000,
+    "allow_html": false,
+    "require_condition_in_title": false,
+    "banned_words": ["cheap", "billig"]
+  },
+  {
+    "id": "amazon-de",
+    "name": "Amazon DE",
+    "title_max_chars": 200,
+    "description_max_chars": 2000,
+    "allow_html": true,
+    "require_condition_in_title": false,
+    "banned_words": ["best price", "guaranteed", "free gift"]
+  },
+  {
+    "id": "ebay",
+    "name": "eBay",
+    "title_max_chars": 55,
+    "description_max_chars": 4000,
+    "allow_html": true,
+    "require_condition_in_title": true,
+    "banned_words": ["l@@k", "wow"]
+  }
+]

@@ -1,0 +1,114 @@
+@startuml augusta-system-component-diagram
+
+title Augusta inventory-to-marketplace listing system
+
+left to right direction
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam backgroundColor #FBFAF7
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #23324A
+  FontColor #172033
+}
+skinparam package {
+  BackgroundColor #F1F4F8
+  BorderColor #73839A
+  FontColor #172033
+}
+skinparam database {
+  BackgroundColor #FFF4D6
+  BorderColor #B87900
+}
+skinparam cloud {
+  BackgroundColor #E8F2F0
+  BorderColor #287A70
+}
+skinparam actor {
+  BackgroundColor #F6E8E1
+  BorderColor #A94E32
+}
+
+actor "Warehouse operator" as operator
+
+package "Next.js application" as nextApp {
+  package "Browser UI" as browser {
+    [Inventory workbench] as workbench
+    [Marketplace picker] as picker
+    [Listing editor\n(title + description)] as editor
+    [Live rule feedback] as liveRules
+    [Approval gate] as approval
+    [Approved listings\n(in-memory)] as approved
+  }
+
+  package "Server" as server {
+    [Inventory and marketplace loader] as loader
+    [POST /api/listings/generate\nRoute Handler] as generateRoute
+    [Generation response parser] as parser
+    [Marketplace rule validator] as validator
+    [Vercel AI SDK adapter] as aiSdk
+  }
+}
+
+database "data/inventory.json" as inventoryData
+database "data/marketplaces.json" as marketplaceData
+cloud "Configured LLM\n(Vercel AI Gateway/provider)" as llm
+
+operator --> workbench : select item
+operator --> picker : choose marketplace
+operator --> editor : edit generated copy
+
+inventoryData --> loader : inventory items
+marketplaceData --> loader : marketplace rules
+loader --> workbench : render inventory
+loader --> picker : render targets
+
+picker --> workbench : selected marketplace
+workbench --> generateRoute : POST item + marketplace
+generateRoute --> loader : resolve trusted fixture data
+generateRoute --> aiSdk : prompt with item and rules
+aiSdk --> llm : generate title + description
+llm --> aiSdk : model text
+aiSdk --> parser : generated text
+parser --> validator : parsed listing
+validator --> generateRoute : listing + violations
+generateRoute --> workbench : listing or failed response
+
+editor --> liveRules : title/description changes
+liveRules --> validator : validate while editing
+validator --> liveRules : clear rule messages
+liveRules --> editor : counters and violations
+
+editor --> approval : request approval
+approval --> validator : final server-independent check
+validator --> approval : valid / blocked
+approval --> approved : add valid listing
+approved --> workbench : approved listing list
+
+note right of generateRoute
+  States returned to the UI:
+  - generating while the route is pending
+  - failed when the model or parser fails
+  - ready when a listing is returned
+end note
+
+note right of validator
+  Required rules:
+  - title_max_chars
+  - banned_words
+  - require_condition_in_title
+
+  Optional rules handled when present:
+  - description_max_chars
+  - allow_html
+
+  An invalid listing cannot pass
+  the approval gate.
+end note
+
+note bottom of approved
+  Approval is local only. There is no database,
+  authentication, or real marketplace publishing.
+end note
+
+@enduml
