@@ -1,124 +1,150 @@
 # Augusta
 
-A Next.js tool for turning the 14 supplied inventory items into marketplace listings. Pick an item and a marketplace, generate a draft, edit it, and approve it once it passes the rules.
-
 ## How to run it
 
-Use Node.js 22 or newer and pnpm. The repo pins pnpm in `package.json`.
+Run `pnpm install`.
+Copy `.env.example` to `.env.local`.
+Set `AI_API_KEY` to your provider's API key.
+Set `AI_PROVIDER` and `AI_MODEL`.
+Run `pnpm dev`.
 
-1. Run `pnpm install`.
-2. Copy `.env.example` to `.env.local`.
-3. Set your provider, API key, and model. The configuration I used for the live check was Google AI Studio with `gemini-3.6-flash`:
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-   ```env
-   AI_PROVIDER=google
-   AI_API_KEY=your_google_ai_studio_key
-   AI_MODEL=gemini-3.6-flash
-   ```
+## How you spent the time
 
-4. Run `pnpm dev` and open [http://localhost:3000](http://localhost:3000).
+Quick skim through the assignment, as I had already read it earlier.
+Decided to use red-green TDD even though tests were listed as out of scope.
+Initialized the project using the pnpm Next.js command and pushed the initial setup to GitHub.
+Roughly followed the software development lifecycle:
 
-Keep your key in `.env.local`, which Git ignores. Restart the server after changing the configuration. Generation needs a working provider key; there is no canned-response fallback in the app.
+1. Requirements: Extracted the requirements from the assignment document and put them in docs/requirements.csv. Determined the tech stack required for the assignment.
+2. Design: Had the model make a quick component diagram. Found a design system to use with DESIGN.md.
+3. Implementation:
 
-### Other providers
+- Created a separate branch for the implementation.
+- Wrote an implementation prompt based on the assignment.
+- Used the grill skill to have the model grill me while in plan mode.
+- Then let the model implement the system using TDD.
+- Used prompts to verify how things work.
+- Astra finished the initial implementation in one run. It needed corrective prompts for the user flow and to allow API keys beyond Vercel Gateway.
+- Audited with Fallow and requested a code review.
+- Opened a PR, looked through the diff myself, and let GitHub Copilot and CodeRabbit review it.
 
-Every adapter reads the same `AI_API_KEY` variable. Set it to the selected provider's own key. Direct provider calls use the Vercel AI SDK and do not require a Vercel account.
+## What you didn't finish, and what you'd do next
 
-| `AI_PROVIDER`           | Key and model                                | `AI_BASE_URL`                                    |
-| ----------------------- | -------------------------------------------- | ------------------------------------------------ |
-| `google`                | Google AI Studio key and Gemini model ID     | Leave empty                                      |
-| `anthropic` or `claude` | Anthropic key and Claude model ID            | Leave empty                                      |
-| `openai`                | OpenAI key and model ID                      | Leave empty                                      |
-| `zai` or `z.ai`         | Z.ai key and GLM model ID                    | Defaults to `https://api.z.ai/api/paas/v4`       |
-| `compatible`            | The service's key and model ID               | Required, use its OpenAI-compatible API base URL |
-| `gateway`               | Vercel Gateway key and a `provider/model` ID | Leave empty                                      |
+Using an AI agent, I was able to finish the required task within the given time.
+Batch generation is skipped as an optional feature.
+What I would do next would be the things listed as out of scope, along with further testing:
 
-Choose a model available to your account. For compatible services, supply the base URL without `/chat/completions`; the SDK adds that path. Z.ai Coding Plan credentials need the dedicated endpoint for that plan, set through `AI_BASE_URL`.
+- A persistent database, probably PostgreSQL.
+- Dockerization.
+- CI to run tests and publish builds.
+- Actual user testing.
+- Design work in Figma instead of having the model generate the layout from DESIGN.md, and some A/B testing.
+- Mutation testing.
+- Authentication.
+- per-item progress and retries
 
-Google, Anthropic, and OpenAI use their native SDK adapters. Z.ai and compatible services use the OpenAI-compatible adapter in JSON mode. Other proprietary APIs need a matching adapter. A Google key cannot authenticate to Vercel Gateway.
+## Where you cut a corner on purpose, and why
 
-## How I spent the time
+The shortcut I used to skip a separate design phase was DESIGN.md, from [designmd.ai](https://designmd.ai/LinuxsWar/deck-card-presentation). It contains a design system, so I didn't have to determine it myself.
 
-I worked through the assignment in this order:
+Another shortcut is to instruct the model to design a user-friendly journey using ASCII instead of developing it myself. That gives it more direction than leaving the journey unspecified.
 
-1. Read the brief and supplied data, then recorded the requirements in [`docs/requirements.csv`](docs/requirements.csv).
-2. Set up Next.js and an implementation branch. I used [`DESIGN.md`](DESIGN.md) as a visual starting point and asked the agent for a component diagram and an ASCII user journey.
-3. Used the grill skill to challenge the plan before implementation. I then had the agent implement the flow with red-green TDD.
-4. Worked through the generated result with corrective prompts. The main corrections were the inventory-to-editor journey and support for direct provider keys rather than only Vercel Gateway.
-5. Verified generation with a real Google key. This exposed two configuration problems: the key was being sent to Gateway, and the initially selected Gemini model was unavailable to the account. Switching to the Google adapter and the model recommended by Google's error response fixed generation.
-6. Ran the checks, used Fallow to find complexity problems, refactored those areas, and requested an independent code review. I also looked through the diff and wrote this README.
+I also didn't commit frequently enough.
 
-The agent produced the initial implementation in one run, but that was not the end of the work. The follow-up checks and corrections mattered, especially around provider configuration and the user flow. I documented while the agent was running because my $20 plan limited how much work I could run concurrently.
+## One thing that would have to change before this could run over tens of thousands of items rather than 14
 
-### AI tools I used
+A real database, probably PostgreSQL.
 
-- OpenCode 2 beta with ChatGPT Astra Medium.
-- The grill and TDD skills for planning and implementation.
-- The frontend skill and `DESIGN.md` for the layout.
-- The Chrome DevTools skill for browser checks.
-- My code-review skill, based on a Qwen review workflow, for an independent review.
-- The unslop skill to edit this README from my notes and the implementation results.
+Other production work I would consider:
 
-For a larger project, I would turn the work into GitHub issues and smaller feature branches. Here, I kept most of it in one implementation branch and committed less often than I normally would.
+- Caching with Redis.
+- Load balancing with nginx or Traefik.
+- Authentication.
+- Deployment through Docker and CI.
+- Hosting.
+- server-side search and pagination
 
-## What works, what I didn't finish, and what I'd do next
+## Any assumptions you made where the brief was unclear
 
-The required flow is implemented. The app loads the supplied JSON, lets the user select a marketplace, and generates a title and description through a Next.js API route. Editing shows violations immediately. Approval checks the listing again on the server against the source data and marketplace rules.
+- I assumed the exclusion of polished visual design still allowed a quick DESIGN.md for the model to base its design on.
+- When a real provider was mentioned, I assumed it was okay to use an SDK that supports multiple providers instead of making my own ad hoc implementation for each one.
+- I interpreted the exclusion of tests as mainly due to the time constraint. I chose TDD because I expected verification to save time when working with an agent, even though the brief explicitly listed tests as out of scope.
 
-Both optional rules, `description_max_chars` and `allow_html`, are implemented alongside the three required rules. Batch generation is not implemented.
+My $20 plan limits how much I can run concurrently, so I was documenting in the meantime.
 
-Each item-marketplace pair has its own draft. Approval creates a read-only snapshot, and the Approved view lists those snapshots across marketplaces. Editing an approved listing removes its approval until it passes review again. Refreshing clears all drafts and approvals. Nothing is published to a marketplace.
+## Tech stack
 
-The app handles loading, failed requests, malformed model responses, and rule-breaking drafts. It gives separate messages for provider authentication, unavailable models, and quota failures. Only Google was checked with live credentials; the other adapters were checked with mocked HTTP responses.
+- Next.js and TypeScript.
+- Vercel AI SDK.
+- Zod.
+- Vitest.
+- ESLint and Prettier.
+- Fallow.
 
-My next step would be to watch someone process several awkward items, especially missing conditions, mixed-condition stock, and supplier notes about defects. Passing the rule checks does not prove the generated copy is factually correct. The source information stays beside the editor so the reviewer can compare it before approval.
+## AI tools used
 
-After that, I would add batch generation with per-item progress and retry handling. I left authentication, persistence, real marketplace publishing, Docker, deployment, and CI out of this assignment as requested. Those would need separate requirements before this became an internal production tool.
+- OpenCode 2, a beta version I was trying out.
+- ChatGPT Astra Medium, $20 plan.
+- The grill skill.
+- Obara Superpowers TDD skill.
+- Chrome DevTools skill, which lets the model interact with the browser and read console errors.
+- Claude frontend skill.
+- My code-review skill, based on Qwen code review.
+- The unslop skill for README editing.
 
-## Where I cut a corner on purpose
+I used my AI tools the way I would for a small greenfield project. I used research, planning, and implementation, followed by verification. For bigger projects, I would use GitHub flow with feature branches instead of putting it all on a dev branch. I would write issues on GitHub and use those as context for the agent.
 
-I reused a design system from [designmd.ai](https://designmd.ai/LinuxsWar/deck-card-presentation) instead of doing a separate visual design exercise. I also asked the agent to sketch the user journey in ASCII rather than making a Figma prototype. That gave it a concrete flow to implement with little setup, but it does not replace user testing.
+## AI-generated description and additions
 
-I kept state in the browser and loaded the two JSON files directly. That fits the supplied dataset and avoids database work, but closing or refreshing the page loses the session.
+The following implementation details, decisions, and testing suggestions are written by the agent.
 
-The prompt asks the model to preserve defects and missing accessories, but I did not build an automated fact-checker. Approval relies on the reviewer checking the copy against the source facts as well as fixing rule violations.
+### Application workflow
 
-I also bundled too much work between commits. Smaller commits would make it easier to review the changes or back out one decision.
-
-## One change needed for tens of thousands of items
-
-I would replace the full client-side inventory list with a searchable, paginated server API backed by a database such as PostgreSQL. The current app sends the inventory to the browser and renders every row. That is fine for 14 items; tens of thousands would make both the payload and the page unnecessarily large.
-
-The browser should request one page at a time, with search and marketplace-status filters applied on the server. This is the first scaling change I would make before adding caches or load balancers.
-
-## Assumptions and scope decisions
-
-- Approval means saving a reviewed snapshot in the current session, not publishing it externally.
-- Banned terms match whole words and phrases, case-insensitively, in both fields. Matching normalizes whitespace and treats punctuation in a configured term literally.
-- A required condition means the full source condition must appear in the title. If the condition is missing, the user can generate and edit a draft, but cannot approve it for that marketplace.
-- An item marked `do not list` stays visible, but generation and approval are blocked.
-- Listings are in English. The model is asked for plain text even when a marketplace permits HTML. User-entered HTML is displayed as text rather than rendered.
-- A structurally valid response that breaks marketplace rules stays editable. A malformed response is a generation failure. Regeneration failures preserve the previous draft.
-- I interpreted permission to use libraries as allowing the Vercel AI SDK for real provider calls. The API route validates the returned title and description with Zod rather than trusting the requested output shape.
-
-The brief explicitly put tests out of scope. I chose TDD anyway because it is how I work with an agent and I expected it to reduce correction time. That was a deliberate deviation from the instruction, not an unclear requirement. I also used a supplied design guide to reach a tidy layout rather than planning a separate polish phase.
-
-## Verification and how I'd test it
-
-```sh
-pnpm check
-pnpm fallow
-pnpm build
+```text
+Inventory queue -> Open item -> Generate -> Review and edit -> Approve
+      ^                            |              |              |
+      |                            +-- Retry      +-- Fix rules  v
+      +---------- Next item <-------------------------- Approved snapshot
+                                                               |
+                                       Approved view <---------+
+                                            |
+                                            +-- Edit -> Draft -> Reapprove
 ```
 
-`pnpm check` runs formatting, ESLint, TypeScript, and Vitest. All tests live in `tests/`. At the last check, all 59 tests passed, Fallow reported no issues, and the production build passed. The independent code review found no actionable issues.
+Each item-marketplace pair keeps its own draft. Source facts and supplier notes appear beside the editor. Approval creates a read-only snapshot; editing it removes approval until reapproved. Refreshing clears drafts and approvals. Nothing is published to a marketplace.
 
-The automated tests cover validation boundaries, malformed API requests and model output, provider errors, editing, approval, separate drafts, navigation, and stale responses after switching items. Provider calls use mocks, so the tests do not need API credits. I also checked the real Google flow in the browser through generation, approval, and the Approved view.
+All five marketplace rules are implemented, including the optional description length and HTML restrictions. Batch generation is not implemented.
 
-For further testing, I would:
+### Implementation decisions made by the agent
 
-- Compare generated claims with the supplied facts across all 14 items and all three marketplaces, with particular attention to defects and missing accessories.
-- Test slow requests, timeouts, rapid navigation, and repeated clicks in the browser. Confirm that an old response cannot overwrite another item's draft.
-- Check the editing and approval journey with keyboard navigation and a screen reader, as well as on a narrow mobile viewport.
-- Run a small live check for each provider we actually plan to support. Mocked responses prove request handling, not account access or model compatibility.
-- Use mutation testing to check whether the rule tests catch a removed or weakened validation branch.
+- Banned terms match whole words and phrases, case-insensitively, with whitespace normalization.
+- A required condition means the full source condition must appear in the title. Missing conditions block approval for that marketplace.
+- Items marked `do not list` remain visible but block generation and approval.
+- Structurally valid drafts that break rules remain editable. Malformed model output is a generation failure, and failed regeneration preserves the previous draft.
+- Generation requests ask for English plain text. Permitted HTML entered by the user is displayed as text rather than rendered.
+
+### Provider configuration
+
+All generation uses the Vercel AI SDK through the Next.js API route. The agent verified live generation with Google AI Studio:
+
+```env
+AI_PROVIDER=google
+AI_API_KEY=your_google_ai_studio_key
+AI_MODEL=gemini-3.6-flash
+```
+
+Native adapters support `google`, `anthropic` or `claude`, and `openai`. Use the provider's own key and an available model ID. Keep credentials in the ignored `.env.local` file and restart the server after changing configuration.
+
+For Z.ai and other OpenAI-compatible services, use `AI_PROVIDER=compatible` and set `AI_BASE_URL` to the service's API base URL without `/chat/completions`. Z.ai's standard endpoint is `https://api.z.ai/api/paas/v4`; Coding Plan credentials use a separate endpoint.
+
+For Gateway, set `AI_PROVIDER=gateway`, use a Vercel Gateway key in `AI_API_KEY`, and specify a `provider/model` ID in `AI_MODEL`. Provider keys do not authenticate directly to Gateway.
+
+### Verification and further testing
+
+Run `pnpm check` for formatting, lint, TypeScript, and tests; `pnpm fallow` for auditing; and `pnpm build` for the production build.
+
+At the last checks, all 59 tests in `tests/` passed, Fallow reported no issues, and the production build passed. The independent code review found no actionable issues. The agent checked the live Google flow through generation, approval, and the Approved view. Other provider tests use mocked HTTP responses.
+
+Further tests suggested by the agent are to compare generated claims against source facts for all items and marketplaces, exercise slow requests and navigation during generation, and check keyboard and screen-reader use. Passing the marketplace rules does not prove that the copy is factually correct.

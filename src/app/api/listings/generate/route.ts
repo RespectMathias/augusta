@@ -14,7 +14,7 @@ export async function POST(request: Request): Promise<Response> {
   if (blocked.length)
     return Response.json({ error: blocked[0].message, violations: blocked }, { status: 422 })
   const resolved = resolveModel()
-  if (!resolved.model) return Response.json({ error: resolved.error }, { status: 503 })
+  if ('error' in resolved) return Response.json({ error: resolved.error }, { status: 503 })
   try {
     const { output } = await generateText({
       model: resolved.model,

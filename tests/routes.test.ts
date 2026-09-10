@@ -78,12 +78,14 @@ describe('listing API', () => {
 describe('listing generation', () => {
   it('generates structured output using source facts and server rules', async () => {
     vi.stubEnv('AI_API_KEY', 'test-key')
+    vi.stubEnv('AI_MODEL', 'openai/gpt-5.4')
     const response = await generate(request({ ...selection, rules: {}, item: { name: 'fake' } }))
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({ listing, violations: [] })
   })
   it('returns invalid drafts with field violations for editing', async () => {
     vi.stubEnv('AI_API_KEY', 'test-key')
+    vi.stubEnv('AI_MODEL', 'openai/gpt-5.4')
     provider.text = JSON.stringify({ ...listing, title: 'CHEAP drill' })
     const response = await generate(request(selection))
     expect(response.status).toBe(200)
@@ -99,12 +101,14 @@ describe('listing generation', () => {
     'rejects malformed provider output %s',
     async (text) => {
       vi.stubEnv('AI_API_KEY', 'test-key')
+      vi.stubEnv('AI_MODEL', 'openai/gpt-5.4')
       provider.text = text
       expect((await generate(request(selection))).status).toBe(502)
     },
   )
   it('returns a safe retryable error on provider failure', async () => {
     vi.stubEnv('AI_API_KEY', 'test-key')
+    vi.stubEnv('AI_MODEL', 'openai/gpt-5.4')
     provider.fail = true
     const response = await generate(request(selection))
     expect(response.status).toBe(502)

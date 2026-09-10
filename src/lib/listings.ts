@@ -25,8 +25,15 @@ export function validateListing(
   listing: Listing,
 ): Violation[] {
   const errors: Violation[] = []
-  if (/\bdo not list\b/i.test(item.name))
-    errors.push({ field: 'item', message: `This item is marked do not list. ${item.notes ?? ''}` })
+  if (/\bdo not list\b/i.test(item.name)) {
+    const reason = item.notes?.trim()
+    errors.push({
+      field: 'item',
+      message: reason
+        ? `This item is marked do not list. ${reason}`
+        : 'This item is marked do not list.',
+    })
+  }
   for (const field of ['title', 'description'] as const)
     errors.push(...validateField(field, listing[field], marketplace))
   errors.push(...validateCondition(item, marketplace, listing.title))

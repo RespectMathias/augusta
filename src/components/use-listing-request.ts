@@ -47,7 +47,7 @@ async function requestListing(action: Action, props: EditorProps, signal: AbortS
     }),
     signal: AbortSignal.any([signal, AbortSignal.timeout(40_000)]),
   })
-  const body: unknown = await response.json()
+  const body: unknown = await response.json().catch(() => undefined)
   if (!response.ok) throw new Error(responseError(body))
   return parseResponse(body, action, props)
 }

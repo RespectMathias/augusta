@@ -92,27 +92,37 @@ it('shows generating state and ignores a late response after selection changes',
   expect(screen.queryByRole('textbox', { name: 'Title' })).toBeNull()
 })
 
-it('keeps edits after failed regeneration and allows retry', async () => {
-  let attempt = 0
-  const user = setup(() =>
-    Promise.resolve(
-      ++attempt === 2
-        ? Response.json({ error: 'Provider unavailable. Try again.' }, { status: 502 })
-        : Response.json({ listing, violations: [] }),
-    ),
-  )
-  await user.click(screen.getByRole('button', { name: /B2S-10041/ }))
-  await user.click(screen.getByRole('button', { name: 'Generate listing' }))
-  const title = await screen.findByRole<HTMLInputElement>('textbox', { name: 'Title' })
-  fireEvent.change(title, { target: { value: 'My edited drill' } })
-  await user.click(screen.getByRole('button', { name: 'Regenerate' }))
-  expect(await screen.findByRole('alert')).toBeTruthy()
-  expect(title.value).toBe('My edited drill')
-  await user.click(screen.getByRole('button', { name: 'Regenerate' }))
-  await waitFor(() => {
-    expect(title.value).toBe('Bosch drill')
-  })
-})
+it.each([
+  [502, 'json', 'Provider unavailable. Try again.'],
+  [502, '<html>Bad gateway</html>', 'Request failed. Try again.'],
+  [502, '', 'Request failed. Try again.'],
+  [200, '<html>Unexpected response</html>', 'The server returned an invalid listing. Try again.'],
+] as const)(
+  'keeps edits and allows retry after a %s response with body %s',
+  async (status, body, message) => {
+    let attempt = 0
+    const user = setup(() =>
+      Promise.resolve(
+        ++attempt === 2
+          ? body === 'json'
+            ? Response.json({ error: message }, { status })
+            : new Response(body, { status })
+          : Response.json({ listing, violations: [] }),
+      ),
+    )
+    await user.click(screen.getByRole('button', { name: /B2S-10041/ }))
+    await user.click(screen.getByRole('button', { name: 'Generate listing' }))
+    const title = await screen.findByRole<HTMLInputElement>('textbox', { name: 'Title' })
+    fireEvent.change(title, { target: { value: 'My edited drill' } })
+    await user.click(screen.getByRole('button', { name: 'Regenerate' }))
+    expect((await screen.findByRole('alert')).textContent).toContain(message)
+    expect(title.value).toBe('My edited drill')
+    await user.click(screen.getByRole('button', { name: 'Regenerate' }))
+    await waitFor(() => {
+      expect(title.value).toBe('Bosch drill')
+    })
+  },
+)
 
 it('rejects malformed responses without creating a draft', async () => {
   const user = setup(() => Promise.resolve(Response.json({ listing: { title: 7 } })))

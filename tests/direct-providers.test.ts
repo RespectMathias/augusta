@@ -20,14 +20,17 @@ afterEach(() => {
 
 it.each([
   ['openai', 'https://api.openai.com/v1/chat/completions'],
-  ['zai', 'https://api.z.ai/api/paas/v4/chat/completions'],
-  ['z.ai', 'https://api.z.ai/api/paas/v4/chat/completions'],
+  ['compatible', 'https://api.z.ai/api/paas/v4/chat/completions'],
+  ['custom', 'https://custom-provider.example/v1/chat/completions'],
   ['compatible', 'https://my-provider.example/v1/chat/completions'],
+  ['compatible', 'http://localhost:11434/v1/chat/completions'],
+  ['compatible', 'http://127.0.0.1:11434/v1/chat/completions'],
+  ['compatible', 'http://[::1]:11434/v1/chat/completions'],
 ] as const)(
   'generates via %s using its direct API key through the AI SDK',
   async (provider, endpoint) => {
     vi.stubEnv('AI_PROVIDER', provider)
-    if (provider === 'compatible') vi.stubEnv('AI_BASE_URL', 'https://my-provider.example/v1')
+    if (provider !== 'openai') vi.stubEnv('AI_BASE_URL', endpoint.replace('/chat/completions', ''))
     vi.stubGlobal('fetch', (url: string, init: RequestInit) => {
       if (
         url !== endpoint ||
@@ -100,8 +103,8 @@ it.each(['anthropic', 'claude'])(
   },
 )
 
-it('requires a base URL for an OpenAI-compatible service', async () => {
-  vi.stubEnv('AI_PROVIDER', 'compatible')
+it('requires an explicit base URL for Z.ai like any other compatible service', async () => {
+  vi.stubEnv('AI_PROVIDER', 'zai')
   const response = await POST(request())
   expect(response.status).toBe(503)
   expect(await response.text()).toContain('AI_BASE_URL')
@@ -114,3 +117,42 @@ it('requires an explicit model for a direct provider without a default', async (
   expect(response.status).toBe(503)
   expect(await response.text()).toContain('AI_MODEL')
 })
+
+it.each(['google', 'gateway'] as const)(
+  'requires an explicitly configured AI_MODEL for %s instead of using a hardcoded default',
+  async (provider) => {
+    vi.unstubAllEnvs()
+    vi.stubEnv('AI_API_KEY', 'provider-test-key')
+    vi.stubEnv('AI_PROVIDER', provider)
+    vi.stubEnv('AI_BASE_URL', '')
+    const remote = vi.fn(() => Promise.reject(new Error('Unexpected remote call')))
+    vi.stubGlobal('fetch', remote)
+    const response = await POST(request())
+    expect(response.status).toBe(503)
+    expect(await response.text()).toContain('AI_MODEL')
+    expect(remote).not.toHaveBeenCalled()
+  },
+)
+
+it.each([
+  ['compatible', 'http://provider.example/v1'],
+  ['google', 'http://provider.example/v1'],
+  ['anthropic', 'http://provider.example/v1'],
+  ['openai', 'http://provider.example/v1'],
+  ['gateway', 'http://provider.example/v1'],
+  ['compatible', 'http://localhost.example/v1'],
+  ['compatible', 'not-a-url'],
+  ['compatible', 'ftp://provider.example/v1'],
+] as const)(
+  'rejects unsafe %s endpoint %s before sending credentials',
+  async (provider, baseURL) => {
+    vi.stubEnv('AI_PROVIDER', provider)
+    vi.stubEnv('AI_BASE_URL', baseURL)
+    const remote = vi.fn(() => Promise.reject(new Error('Unexpected remote call')))
+    vi.stubGlobal('fetch', remote)
+    const response = await POST(request())
+    expect(response.status).toBe(503)
+    expect(await response.text()).toContain('AI_BASE_URL')
+    expect(remote).not.toHaveBeenCalled()
+  },
+)
