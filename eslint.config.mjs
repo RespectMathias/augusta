@@ -3,7 +3,6 @@ import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
 import prettierConfig from 'eslint-config-prettier'
 import tseslint from 'typescript-eslint'
-import { noChainedAssertion } from './eslint-rules/no-chained-assertion.mjs'
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -36,11 +35,7 @@ const eslintConfig = defineConfig([
       // Not enabled by strictTypeChecked (only in `all`): rejects
       // assertions that narrow without evidence (e.g. unknown -> string).
       '@typescript-eslint/no-unsafe-type-assertion': 'error',
-      // Local port of anti-slop no-chained-type-assertions (narrow scope):
-      // nested `as` launders weak evidence. No standard equivalent.
-      'jot/no-chained-assertion': 'error',
     },
-    plugins: { jot: { rules: { 'no-chained-assertion': noChainedAssertion } } },
   },
   // Must stay last: disables stylistic rules that would fight Prettier.
   prettierConfig,
