@@ -74,6 +74,16 @@ Other production work I would consider:
 
 My $20 plan limits how much I can run concurrently, so I was documenting in the meantime.
 
+## Issues I encountered
+
+I ran into three issues during implementation. All three were steering issues rather than implementation problems. Compared to Claude models, GPT models tend to follow explicit instructions very literally, not infering intent.
+
+1. The agent interpreted context as instructions. When asking it to create the component diagram, I pasted in the assignment so it understood the system we were building. I did not clearly separate that context from the actual task, so it started working from the assignment instead of only producing the diagram.
+
+2. I did not plan the user journey early enough. I specified requirements and component structure without defining how the user should move through the application. The agent therefore built most of the workflow around a single page. I later asked it to design the user journey in ASCII first, then implement that journey, which led it to add the components needed for the flow.
+
+3. I did not specify the provider requirements clearly enough. I already knew I wanted the application to support provider API keys directly, but forgot to tell the agent. It initially implemented generation around Vercel AI Gateway. I caught this during verification and had it add direct provider support.
+
 ## Tech stack
 
 - Next.js and TypeScript.
